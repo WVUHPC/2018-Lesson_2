@@ -1,13 +1,13 @@
 ---
-title: "Introduction"
-teaching: 0
-exercises: 0
+title: "Fortran: Intensive Numerics"
+teaching: 45
+exercises: 15
 questions:
-- "Key question (FIXME)"
+- "Why to use Fortran if it is so old?"
 objectives:
-- "First objective. (FIXME)"
+- "Learn the basics of Fortran and its long tradition in Numerical Computing"
 keypoints:
-- "First key point. (FIXME)"
+- "The most important libraries for Matrix computation and Linear Algebra, BLAS and LAPACK were written in Fortran and they are still in used today. They are behind Numpy in Python and R can be compiled to use it too."
 ---
 FIXME
 

@@ -1,13 +1,13 @@
 ---
-title: "Introduction"
-teaching: 0
-exercises: 0
+title: "Cython"
+teaching: 45
+exercises: 15
 questions:
-- "Key question (FIXME)"
+- "What is Cython and its relation with Python?"
 objectives:
-- "First objective. (FIXME)"
+- "Optimize a numerical intensive operation with Cython"
 keypoints:
-- "First key point. (FIXME)"
+- "Cython is a superset of the Python programming language, designed to give C-like performance with code that is written mostly in Python."
 ---
 FIXME
 

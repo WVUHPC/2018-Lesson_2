@@ -1,13 +1,13 @@
 ---
-title: "Introduction"
-teaching: 0
-exercises: 0
+title: "Python: Fast prototyping and glue code"
+teaching: 45
+exercises: 15
 questions:
-- "Key question (FIXME)"
+- "Why Python is so commonly use nowadays?"
 objectives:
-- "First objective. (FIXME)"
+- "Learn the flexibility of python to create complex programs and selectively optimize them"
 keypoints:
-- "First key point. (FIXME)"
+- "Python is very inefficient for numerical computing if you do not use numpy"
 ---
 FIXME
 

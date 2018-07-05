@@ -1,13 +1,14 @@
 ---
-title: "Introduction"
-teaching: 0
-exercises: 0
+title: "Julia: The best of two worlds"
+teaching: 45
+exercises: 15
 questions:
-- "Key question (FIXME)"
+- "What is Julia, dynamic dispatch and dynamic type."
 objectives:
-- "First objective. (FIXME)"
+- "Learn the basics of Julia and its use in scientific computing"
 keypoints:
-- "First key point. (FIXME)"
+- "Julia offers the advantages of interpreted languages like R or Python and
+good performance, approaching that of statically-compiled languages like C"
 ---
 FIXME
 

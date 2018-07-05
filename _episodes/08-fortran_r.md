@@ -1,13 +1,13 @@
 ---
-title: "Introduction"
-teaching: 0
-exercises: 0
+title: "Fortran inside R"
+teaching: 45
+exercises: 15
 questions:
-- "Key question (FIXME)"
+- "How to accelerate numerical intensive operations in R"
 objectives:
-- "First objective. (FIXME)"
+- "Using Fortran inside R for a matrix operation."
 keypoints:
-- "First key point. (FIXME)"
+- "You can integrate compiled languages like Fortran or C inside R to optimize specific routines. The resulting code becomes restricted to only run on similar machines."
 ---
 FIXME
 
