@@ -12,7 +12,11 @@
       </button>
 
       {% comment %} Select what logo to display. {% endcomment %}
-      {% if site.carpentry == "swc" %}
+      {% if site.carpentry == "wvu" %}
+      <a href="{{ site.wvu_site }}" class="pull-left">
+        <img class="navbar-logo" src="{{ page.root }}/assets/img/wvu-rc.png" alt="West Virginia University - Research Computing" />
+      </a>
+      {% elsif site.carpentry == "swc" %}
       <a href="{{ site.swc_site }}" class="pull-left">
         <img class="navbar-logo" src="{{ page.root }}/assets/img/swc-icon-blue.svg" alt="Software Carpentry logo" />
       </a>
@@ -31,7 +35,8 @@
       {% endif %}
 
       {% comment %} Always show link to home page. {% endcomment %}
-      <a class="navbar-brand" href="{{ page.root }}{% link index.md %}">Home</a>
+      <a class="navbar-brand" href="https://wvuhpc.github.io/2018-SummerWorkshop">Workshop</a>
+      <a class="navbar-brand" href="{{ page.root }}{% link index.md %}">Lesson</a>
 
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
