@@ -4,7 +4,11 @@
 <footer>
   <div class="row">
     <div class="col-md-6 copyright" align="left">
-	{% if site.carpentry == "swc" %}
+	{% if site.carpentry == "wvu" %}
+	Copyright &copy; 2018–{{ 'now' | date: "%Y" }}
+	<a href="{{ site.workshop_site }}">West Virginia University</a>
+        <br>
+	{% elsif site.carpentry == "swc" %}
 	Copyright &copy; 2018–{{ 'now' | date: "%Y" }}
 	<a href="{{ site.carpentries_site }}">The Carpentries</a>
         <br>
