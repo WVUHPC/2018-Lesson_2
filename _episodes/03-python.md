@@ -1,6 +1,6 @@
 ---
 title: "Python: Fast prototyping and glue code"
-teaching: 45
+teaching: 15
 exercises: 15
 questions:
 - "Why Python is so commonly use nowadays?"

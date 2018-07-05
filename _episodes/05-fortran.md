@@ -1,6 +1,6 @@
 ---
 title: "Fortran: Intensive Numerics"
-teaching: 45
+teaching: 75
 exercises: 15
 questions:
 - "Why to use Fortran if it is so old?"

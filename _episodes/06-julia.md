@@ -3,7 +3,8 @@ title: "Julia: The best of two worlds"
 teaching: 45
 exercises: 15
 questions:
-- "What is Julia, dynamic dispatch and dynamic type."
+- "What is Julia?"
+- "Why Julia is more efficient without being compiled?"
 objectives:
 - "Learn the basics of Julia and its use in scientific computing"
 keypoints:

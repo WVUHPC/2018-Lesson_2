@@ -1,5 +1,5 @@
 ---
-title: "Cython"
+title: "Cython to accelerate Python execution"
 teaching: 45
 exercises: 15
 questions:
