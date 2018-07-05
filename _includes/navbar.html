@@ -43,7 +43,9 @@
       <ul class="nav navbar-nav">
 
 	{% comment %} Always show code of conduct. {% endcomment %}
+	{% comment%}
         <li><a href="{{ page.root }}{% link CODE_OF_CONDUCT.md %}">Code of Conduct</a></li>
+	{% endcomment %}
 
         {% if site.kind == "lesson" %}
 	{% comment %} Show setup instructions. {% endcomment %}
