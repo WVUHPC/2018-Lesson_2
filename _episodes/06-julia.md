@@ -3,8 +3,7 @@ title: "Julia: The best of two worlds"
 teaching: 45
 exercises: 15
 questions:
-- "What is Julia?"
-- "Why Julia is more efficient without being compiled?"
+- "What is Julia, and why should I learn another language?"
 objectives:
 - "Learn the basics of Julia and its use in scientific computing"
 keypoints:
