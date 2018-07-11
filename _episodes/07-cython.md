@@ -11,12 +11,12 @@ keypoints:
 ---
 # Cython
 
-Cython is a language the extends Python, with minimal changes to a python code
-you can get a compiled code that runs faster. From another perspective Cython is like a bridge that allow you to interface C and C++ routines inside python.
+Cython is a language the extends Python. With minimal changes to a python code,
+you can get a compiled code that runs faster. From another perspective, Cython is like a bridge that allows you to interface C and C++ routines inside python.
 
-Here we will follow a very practical route to give you basic elements that will quickly improve the performance of your code with minimal effort. For Scientific computing performance is an issue, but also you want to optimize the time that you spend your time as developer. The right balance between both is the goal.
+We will follow a very practical route to give you basic elements that will quickly improve the performance of your code with minimal effort. Scientific computing, performance is central, but also you want to optimize the time spent developing the code. The right balance between both is the goal. Using Python is an efficient way of getting a code that works, but still work must to be done to make it efficient.
 
-Lets take again the python code for the Sieve of Eratosthenes, remember the code has a very poor performance, we are using lists and loops and those elements make the code run very slowly, that was done on purpose because allow us to explore how to improve from there.
+Let us take the code for the Sieve of Eratosthenes, the python code was very poor in performance. We are using an interpreted language, but also we are using lists and loops. Those elements make the code run very slowly, that was done on purpose because allow us to explore how to improve from there.
 
 We start splitting the original code in two files. The file that contains the function `SieveOfEratosthenes` will be separated on a file called `sieve.py`:
 
@@ -91,11 +91,11 @@ if __name__ == "__main__":
     print("")
     print(" Prime numbers up to %d" % n)
     nprimes = sieve.SieveOfEratosthenes(n)
-    print(" Funtion return: %d" % nprimes)
+    print(" Function return: %d" % nprimes)
 ~~~
 {: .source}
 
-Lets compute how much time will take to execute finding all prime numbers for the first 50 million numbers. We do not want to do that on the head node as many others will be doing the same so we will use an qsub on interactive mode, here I am using `debug`, but use any queue that allow you to enter quickly.
+Let us compute how much time will take to find all prime numbers among the first 50 million integers. We do not want to do that on the head node. As several others will be doing the same, we will use a qsub on interactive mode, here I am using `debug`, but use any queue that allows you to enter quickly.
 
 ~~~
 $ qsub -I -q debug
@@ -121,18 +121,18 @@ $ time python3 main.py 5E7
 
 
  Total number of primes found: 3001133
- Funtion return: 3001133
+ Function return: 3001133
 
-real	0m35.606s
-user	0m35.560s
-sys	0m0.052s
+real    0m35.606s
+user    0m35.560s
+sys    0m0.052s
 ~~~
 {: .output}
 
-From above you see that it takes 35 seconds to compute the prime numbers up to 50 million, there are several reasons for that extreme long execution time, we are using an interpreted language, we are using python's lists instead of an library
+From above, you see that it takes 35 seconds to compute the prime numbers up to 50 million, there are several reasons for that extreme long execution time, we are using an interpreted language, we are using python's lists instead of a library
 like numpy and we are using python's loops instead of vectorized operations again using numpy.
 
-Lets explore what we can do easily with Cython to improve that figure.
+Let us explore what we can do easily with Cython to improve that figure.
 We start copying `sieve.py` as `sieve_ct.pyx` and adding this to the first line of the new file:
 
 ~~~
@@ -140,11 +140,11 @@ We start copying `sieve.py` as `sieve_ct.pyx` and adding this to the first line 
 ~~~
 {: .source}
 
-That line is a comment for python but will instruct cython that the code below is python 3. Otherwise cython interpret print as python 2 and will fail.
+That line is a comment for python but will instruct cython that the code below is python 3. Otherwise, cython interprets print as python 2 and will fail.
 
 Cython works by taking a code like `sieve_ct.pyx` that right now is exactly identical to the original and create a C code `sieve_ct.c` that can be compiled into a shared library `sieve_ct.so` that we can import as any other python module.
 
-There are several ways of compiling Cython extensions. Three ways will demonstrated here: the manual way, using `distutils` and using `pyximport` for transparent compilation.
+There are several ways of compiling Cython extensions. Three ways will demonstrate here: the manual way, using `distutils` and using `pyximport` for transparent compilation.
 
 ## Compiling manually
 
@@ -185,11 +185,11 @@ if __name__ == "__main__":
     print("")
     print(" Prime numbers up to %d" % n)
     nprimes = sieve_ct.SieveOfEratosthenes(n)
-    print(" Funtion return: %d" % nprimes)
+    print(" Function return: %d" % nprimes)
 ~~~
-{: .python}
+{: .language-python}
 
-Lets get some timing using the new cython modules (remember to use `qsub -I`)
+Let us get some timing using the new cython modules (remember to use `qsub -I`)
 
 ~~~
 $ module load compilers/python/3.6.0
@@ -207,11 +207,11 @@ $ time python3 main_ct.py 5E7
 
 
  Total number of primes found: 3001133
- Funtion return: 3001133
+ Function return: 3001133
 
-real	0m17.602s
-user	0m17.549s
-sys	0m0.056s
+real    0m17.602s
+user    0m17.549s
+sys    0m0.056s
 ~~~
 {: .output}
 
@@ -231,7 +231,7 @@ setup(
     ext_modules=cythonize('sieve_ct.pyx')
     )
 ~~~
-{: .python}
+{: .language-python}
 
 We are using the `cythonize` module from Cython that allow us to compile the code without actually running `cython` and the `gcc` command.
 
@@ -250,7 +250,7 @@ gcc -pthread -shared -flto -ffat-lto-objects -flto-partition=none build/temp.lin
 ~~~
 {: .output}
 
-As you can see that save you from knowing the compilation line. The `--inplace` is just to get the resulting `.so` file in the same place as the `main_ct.py`. Otherwise you will have to look inside the build folder for the `.so` file generated.
+As you can see that save you from knowing the compilation line. The `--inplace` is just to get the resulting `.so` file in the same place as the `main_ct.py`. Otherwise, you will have to look inside the build folder for the `.so` file generated.
 
 The new file is called `sieve_ct.cpython-36m-x86_64-linux-gnu.so`, you can get timings again and noticing that the new code is one or two seconds faster, just because the compilation line add a bit higher optimization level.
 
@@ -293,8 +293,8 @@ The module `pyximport` will take care of compile the code transparently for you.
 
 Until now, we have not change the function `SieveOfEratosthenes(n)` from the original used on our first episode. We can get another boost in performance by using "typed variables".
 
-In python, you can use variables to store all sort of types and changing them during execution, for example you can declare `a=1` and later change it into `a='one'`.
-That kind of flexibility is very welcome on a interpreted language but it comes with high performance overhead. Without knowing the type of variables in advance, the interpreter cannot produce on-the-fly the kind of optimized code that a programming language like C can produce.
+In python, you can use variables to store all sort of types and changing them during execution, for example, you can declare `a=1` and later change it into `a='one'`.
+That kind of flexibility is very welcome on an interpreted language but it comes with high-performance overhead. Without knowing the type of variables in advance, the interpreter cannot produce on-the-fly the kind of optimized code that a programming language like C can produce.
 
 In Cython, you can declare the type of variables with a minimal change on the code.
 Make a copy of `sieve_ct.pyx` as `sieve_st.pyx` and add this line inside the function definition:
@@ -417,7 +417,7 @@ def SieveOfEratosthenes(n):
     free(prime)
     return nprimes
 ~~~
-{: .python}
+{: .language-python}
 
 First, we add some imports from `libc`, those imports are very similar to `#include <stdlib>` and `#include <stdio>`
 
@@ -426,7 +426,7 @@ First, we add some imports from `libc`, those imports are very similar to `#incl
 from libc.stdio cimport printf
 from libc.stdlib cimport malloc, free
 ~~~
-{: .python}
+{: .language-python}
 
 The next step is to replace the Phyton `prime` list into a Cython C-like array (actually a pointer).
 
@@ -435,7 +435,7 @@ cdef int *prime = <int *> malloc(imax * sizeof(int))
 for i in range(imax):
     prime[i]=1    
 ~~~
-{: .python}
+{: .language-python}
 
 The other changes in the code consist from changing storing and comparing Booleans (`True` and `False`) for integers (1 or 0)
 
@@ -465,18 +465,13 @@ In [4]: %timeit sieve_ar.SieveOfEratosthenes(5E7)
 
 We have successfully lowered the time to compute the prime numbers up to 50 million from 39 seconds to 1.5 seconds.
 
-Lets summarize our success on the next table:
+Let us summarize our success in the next table:
 
-|Code	    |Description |Timing (Using %timeit)|
+|Code        |Description |Timing (Using %timeit)|
 |:--------|:-----------|:---------------------|
-|sieve.py |Original code| 39 s ± 1.01 s per loop (mean ± std. dev. of 7 runs, 1 loop each)|
-|sieve_ct.pyx| Original code with Cython compilation|16.4 s ± 1.19 s per loop (mean ± std. dev. of 7 runs, 1 loop each)|
-|sieve_st.pyx| Using typed variables|7.18 s ± 112 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)|
-|sieve_ar.pyx| Using C arrays and pointers|1.62 s ± 24.5 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)|
-
-
-
-
-
+|`sieve.py` |Original code| 39 s ± 1.01 s per loop (mean ± std. dev. of 7 runs, 1 loop each)|
+|`sieve_ct.pyx`| Original code with Cython compilation|16.4 s ± 1.19 s per loop (mean ± std. dev. of 7 runs, 1 loop each)|
+|`sieve_st.pyx`| Using typed variables|7.18 s ± 112 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)|
+|`sieve_ar.pyx`| Using C arrays and pointers|1.62 s ± 24.5 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)|
 
 {% include links.md %}
