@@ -73,7 +73,7 @@ def SieveOfEratosthenes(n):
 
     return nprimes
 ~~~
-{: .source}
+{: .language-python}
 
 The other file will just contain the `main` execution:
 
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     nprimes = sieve.SieveOfEratosthenes(n)
     print(" Function return: %d" % nprimes)
 ~~~
-{: .source}
+{: .language-python}
 
 Let us compute how much time will take to find all prime numbers among the first 50 million integers. We do not want to do that on the head node. As several others will be doing the same, we will use a qsub on interactive mode, here I am using `debug`, but use any queue that allows you to enter quickly.
 
