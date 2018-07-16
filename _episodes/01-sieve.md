@@ -351,7 +351,407 @@ sys     0m0.049s
 ~~~
 {: .source}
 
-### C 
+### C
+
+C is a compiled language frequently used as the standard language to write operating systems. It is general purpose in contrast to Fortran that is specific for numerical computing.
+
+~~~
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int sieveOfEratosthenes(unsigned int n);
+
+int main(int argc, char *argv[])
+{
+
+  unsigned int n=1, nprimes;
+  if (argc > 1) n = atoi(argv[1]);
+  else n = 100;
+
+  printf(" Prime numbers up to %d\n", n);
+  nprimes=sieveOfEratosthenes(n);
+  printf(" Total number of primes found: %d\n\n", nprimes);
+}
+
+
+int sieveOfEratosthenes(unsigned int n)
+{
+  unsigned int imax, neff, counter=1, nprimes=0;
+  char *prime;
+
+  if (n%2==0)
+    imax=n/2;
+  else
+    imax=(n+1)/2;
+  neff= 2*(imax-1)+1;
+  prime = (char *)malloc(imax * sizeof(char));
+
+  for(unsigned int i=0; i<imax; i++){
+    prime[i]=1;
+  }
+
+  printf(" Dimension of array: %d\n", imax);
+  printf(" Array with indices between 0 to %d\n", imax-1);
+  printf(" Stores primality of odd numbers in range [1, %d]\n\n", neff);
+
+  // The loop runs over all odd numbers starting at 3
+  for(unsigned int p = 3; p <n/2+1; p+=2)
+    {
+      // If prime[p] is true, then it is a prime
+      if(prime[(p-1)/2] == 1)
+	{
+	  // Update all multiples of p
+	  for(unsigned int i = p*2; i <= neff; i += p)
+	    {
+	      if (i%2!=0) prime[(i-1)/2] = 0;
+	    }
+	}
+    }
+
+  // Print all prime numbers if the number is small otherwise just count the number of primes found
+  if (imax < 10000) {
+    printf("%10d ", 2);
+    // Starting with index 1 instead of zero because (2*0)+1 = 1 is not prime
+    for(unsigned int i = 1; i < imax; i++){
+      if(prime[i] == 1){
+	printf("%10d ", 2*i+1);
+	counter++;
+      }
+      if (counter == 15){
+	printf("\n");
+	counter=0;
+      }
+    }
+    printf("\n");
+  }
+  for(unsigned int i = 1; i < imax; i++){
+    if(prime[i] == true)
+      nprimes ++;
+  }
+  // Adding one extra due to 2 that is not counted on the list
+  return nprimes+1;
+}
+~~~
+{: .language-c}
+
+Lets do a simple compilation and timing
+
+~~~
+$ gcc SieveOfEratosthenes.cxx
+$ time ./a.out 100000000
+~~~
+{: .language-bash}
+~~~
+ Prime numbers up to 100000000
+ Dimension of array: 50000000
+ Array with indices between 0 to 49999999
+ Stores primality of odd numbers in range [1, 99999999]
+
+ Total number of primes found: 5761455
+
+
+real    0m4.571s
+user    0m4.560s
+sys     0m0.011s
+~~~
+{: .output}
+
+### C++
+
+C++ originally was created very close to C but offering Object-Oriented Programming that C due to its age never had. Nowadays C++ have departed significantly from C, C code for most part still compiles on a C++ compiler but the language itself have grown in complexity, specially with the latest specifications, C++11 and C++14.
+
+~~~
+#include <inttypes.h>
+#include <limits>
+#include <cmath>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <algorithm>
+#include <vector>
+
+template <typename ForwardIterator>
+size_t SieveOfEratosthenes(ForwardIterator start, ForwardIterator end)
+{
+  if (start == end) return 0;
+  // Filling the entire vector with zeros
+  std::fill(start, end, 0);
+  // mark composites with 1
+  for (ForwardIterator prime_it = start + 1; prime_it != end; ++prime_it)
+    {
+      if (*prime_it == 1) continue;
+      // The variable stride contains the actual prime number that we use to skip across
+      size_t stride = (prime_it - start) + 1;
+      // Jumping with stride all elements staring on the current index are marked as non-primes
+      ForwardIterator mark_it = prime_it;
+      while ((end - mark_it) > stride)
+        {
+	  std::advance(mark_it, stride);
+	  // Here is where the non-prime is marked
+	  *mark_it = 1;
+        }
+    }
+  // copy marked primes into container
+  ForwardIterator out_it = start;
+  for (ForwardIterator it = start + 1; it != end; ++it)
+    {
+      if (*it == 0)
+        {
+	  *out_it = (it - start) + 1;
+	  ++out_it;
+        }
+    }
+  return out_it - start;
+}
+
+int main(int argc, const char* argv[])
+{
+  using namespace std;
+
+  int n=100, counter=0;
+
+  if (argc == 2) {
+    stringstream ss(argv[--argc]);
+    ss >> n;
+
+    if (n < 1 or ss.fail()) {
+      cerr << "USAGE:\n  SieveOfEratosthenes N\n\nwhere N in the range [1, "
+	   << numeric_limits<int>::max() << ")" << endl;
+      return 2;
+    }
+  }
+
+  std::vector<int> primes(n);
+
+  printf(" Prime numbers up to %d\n", n);
+  size_t nprimes = SieveOfEratosthenes(primes.begin(), primes.end());
+
+  if (n <= 10000){
+    for (size_t i = 0; i < nprimes; ++i)
+      {
+	std::cout << std::setw(8) << primes[i] << " ";
+	counter++;
+	if (counter==10){
+	  counter = 0;
+	  std::cout << std::endl;
+	}
+      }
+    std::cout << std::endl;
+  }
+
+  std::cout << " Total number of primes found: "<< nprimes<< std::endl;
+
+  return 0;
+}
+~~~
+{: .language-c}
+
+The implementation uses `vector` that is part of the Standard Library. The timing follows:
+
+~~~
+$ g++ SieveOfEratosthenes.cpp
+$ time ./a.out 100000000
+~~~
+{: .language-bash}
+~~~
+ Prime numbers up to 100000000
+ Total number of primes found: 5761455
+
+real    0m21.324s
+user    0m21.240s
+sys     0m0.091s
+~~~
+{: .output}
+
+### Fortran
+
+Fortran is one of the oldest programming languages. It was created to do numerical computations from the very beginning. It have evolved with time from the strict format of Fotran 77 into a modern language that includes modules but still having a appeal for numerical computing. Together with C and C++ constitutes the triad of truly HPC languages.
+
+~~~
+subroutine SieveOfEratosthenes(n, nprimes)
+
+  implicit none
+
+  integer, intent(in) :: n
+  integer, intent(out) :: nprimes
+
+  integer :: imax, neff, counter=1
+  integer, allocatable :: prime(:)
+  integer :: i,p
+
+  if ( mod(n,2) .eq. 0) then
+     imax=n/2
+  else
+     imax=(n+1)/2
+  end if
+
+  neff= 2*(imax-1)+1
+  allocate(prime(0:imax))
+
+  do i=0, imax
+     prime(i)=1
+  end do
+
+  write(*,*) " Dimension of array: ", imax
+  write(*,*) " Array with indices between 0 to ", imax-1
+  write(*,'(1X,A,I0,A,A)') " Stores primality of odd numbers in range [1,", neff, "]", char(0)
+
+  ! The loop runs over all odd numbers starting at 3
+  do p = 3, n/2+1, 2
+     ! If prime(p) is 1, then it is a prime
+     if(prime((p-1)/2) == 1) then
+        ! Update all multiples of p
+        do i = p*2, neff, p
+           if (mod(i,2)/=0) then
+              prime((i-1)/2) = 0
+           end if
+        end do
+     end if
+  end do
+
+! Print all prime numbers if the number is small otherwise just count the number of primes found
+  if (imax < 10000) then
+     write(*,'(I10)', advance="no") 2
+     ! Starting with index 1 instead of zero because (2*0)+1 = 1 is not prime
+     do i = 1, imax, 1
+        if(prime(i) == 1) then
+           write(*,'(I10)', advance="no") 2*i+1
+           counter = counter + 1
+        end if
+        if (counter == 15) then
+           write(*,*) char(0)
+           counter=0
+        end if
+     end do
+     write(*,*) char(0)
+  end if
+
+  do i = 1, imax, 1
+     if(prime(i) == 1) then
+        nprimes = nprimes + 1
+     end if
+  end do
+
+end subroutine SieveOfEratosthenes
+
+
+program main
+
+  implicit none
+
+  integer :: n=1, nprimes, count, stat
+  character(len=32) :: arg
+
+  count = command_argument_count()
+!  print *, count
+
+  if (count > 0) then
+     CALL get_command_argument(1, arg)
+     read(arg,*,iostat=stat)  n
+  else
+     n = 100
+  end if
+
+  write(*,*) char(0)
+  write(*,*) " Prime numbers up to ", n
+  call SieveOfEratosthenes(n, nprimes)
+  write(*,*) " Total number of primes found: ", nprimes
+
+end program main
+~~~
+{: .language-fortran}
+
+~~~
+$ gfortran SieveOfEratosthenes.f90
+$ time ./a.out 100000000
+~~~
+{: .language-bash}
+~~~
+  Prime numbers up to    100000000
+  Dimension of array:     50000000
+  Array with indices between 0 to     49999999
+  Stores primality of odd numbers in range [1,99999999]
+  Total number of primes found:      5761455
+
+real    0m6.779s
+user    0m6.733s
+sys     0m0.049s
+~~~
+{: .output}
+
+### Julia
+
+Our last programming language is Julia. A modern interpreted language that performs very similar to a compiled language. It offers a lot of modern syntax as we can see from this implementation.
+
+~~~
+function SieveOfEratosthenes(lim :: Int)
+    is_prime :: Array = trues(lim)
+    llim :: Int = isqrt(lim)
+    result :: Array = [2]  #Initial array
+    for i = 3:2:lim
+        if is_prime[i]
+            if i <= llim
+                for j = i*i:2*i:lim
+                    is_prime[j] = false
+                end
+            end
+            push!(result,i)
+        end
+    end
+    return result
+end
+
+n=parse(Int64,ARGS[1])
+println("Prime numbers up to " * string(n))
+ret=SieveOfEratosthenes(n)
+if (size(ret,1)<1000)
+   println(ret)
+end
+
+println("Total number of primes found: " * string(size(ret,1)))
+~~~
+{: .language-julia}
+
+And the timing
+
+~~~
+$ time julia SieveOfEratosthenes.jl 100000000
+~~~
+{: .language-bash}
+~~~
+Prime numbers up to 100000000
+Total number of primes found: 5761455
+
+real    0m1.444s
+user    0m1.456s
+sys     0m1.297s
+~~~
+{: .output}
+
+## Wrapping up
+
+There are a number of programming languages used in Scientific Computing. We have shown a selection of 7 languages with open implementations. This exercise was intended to expose the way each code is compiled and executed. A benchmark is only illustrative of the performance of each language, with the premise that we have avoided the use of external libraries. The table below shows the timings obtained on Spruce by the time this was written.
+
+| Programming Language | Time to compute primes up to 1E8|
+|:---------------------|:--------------------------------|
+| R | 24.4 s |
+| Python | 81.5 s |
+| Java | 1.1 s |
+| C | 4.5 s |
+| C++ | 21.3 s |
+| Fortran | 6.7 s |
+| Julia | 1.4 s |
+
+In the case of C, C++ and Fortran, no optimization options were used during compilation. The table below shows the timings compiling with optimization option level 3 `-O3` and using GCC compilers `gcc`, `g++` and `gfortran`
+
+| Programming Language | Time to compute primes up to 1E8|
+|:---------------------|:--------------------------------|
+| C | 0.947 s |
+| C++ | 2.661 s |
+| Fortran | 1.242 s |
+
+
 
 
 {% include links.md %}
