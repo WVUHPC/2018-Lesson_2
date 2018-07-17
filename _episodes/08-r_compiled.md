@@ -210,6 +210,77 @@ $sampling.time
 ~~~
 {: .source}
 
+Using memory profiling:
+
+~~~
+> Rprof("run_mem2.out", memory.profiling=TRUE)
+> SieveOfEratosthenes(100000000)
+[1] 5761455
+> Rprof(NULL)
+> summaryRprof("run_mem.out", memory="both")
+$by.self
+                      self.time self.pct total.time total.pct mem.total
+"pmin"                     4.06    35.43       4.06     35.43    3340.0
+"SieveOfEratosthenes"      3.94    34.38      11.46    100.00    5905.4
+"seq.default"              3.18    27.75       7.26     63.35    4818.8
+"sum"                      0.26     2.27       0.26      2.27       7.9
+"max"                      0.02     0.17       0.02      0.17       7.7
+
+$by.total
+                      total.time total.pct mem.total self.time self.pct
+"SieveOfEratosthenes"      11.46    100.00    5905.4      3.94    34.38
+"seq.default"               7.26     63.35    4818.8      3.18    27.75
+"seq"                       7.26     63.35    4818.8      0.00     0.00
+"pmin"                      4.06     35.43    3340.0      4.06    35.43
+"sum"                       0.26      2.27       7.9      0.26     2.27
+"max"                       0.02      0.17       7.7      0.02     0.17
+
+$sample.interval
+[1] 0.02
+
+$sampling.time
+[1] 11.46
+~~~
+{: .source}
+
+Monitoring the garbage collector
+
+~~~
+> gcinfo()
+Error in gcinfo() : argument "verbose" is missing, with no default
+> gcinfo(TRUE)
+[1] FALSE
+> SieveOfEratosthenes(100000000)
+Garbage collection 37 = 19+5+13 (level 1) ...
+19.9 Mbytes of cons cells used (59%)
+1786.2 Mbytes of vectors used (86%)
+Garbage collection 38 = 19+5+14 (level 2) ...
+19.8 Mbytes of cons cells used (58%)
+959.6 Mbytes of vectors used (46%)
+Garbage collection 39 = 20+5+14 (level 0) ...
+19.8 Mbytes of cons cells used (58%)
+1468.2 Mbytes of vectors used (71%)
+Garbage collection 40 = 20+6+14 (level 1) ...
+19.8 Mbytes of cons cells used (58%)
+1213.9 Mbytes of vectors used (58%)
+Garbage collection 41 = 21+6+14 (level 0) ...
+19.8 Mbytes of cons cells used (58%)
+1322.9 Mbytes of vectors used (64%)
+Garbage collection 42 = 22+6+14 (level 0) ...
+19.8 Mbytes of cons cells used (58%)
+1372.7 Mbytes of vectors used (66%)
+Garbage collection 43 = 23+6+14 (level 0) ...
+19.8 Mbytes of cons cells used (58%)
+1385.5 Mbytes of vectors used (67%)
+Garbage collection 44 = 24+6+14 (level 0) ...
+19.8 Mbytes of cons cells used (58%)
+1386.3 Mbytes of vectors used (67%)
+Garbage collection 45 = 25+6+14 (level 0) ...
+19.8 Mbytes of cons cells used (58%)
+1387.9 Mbytes of vectors used (67%)
+[1] 5761455
+~~~
+{: .source}
 
 
 
